@@ -51,8 +51,6 @@ fn main(){
     println!("============== Iniciando KOALA =================");
 
     for objetivo in objetivos{
-        println!("Prueba a {}", objetivo.nombre);
-
         for ip in objetivo.ip4{
             println!("Ping a {}", ip);
 
@@ -60,14 +58,22 @@ fn main(){
                 .arg("-c")
                 .arg("4")
                 .arg("-4") //Forzar IPv4
-                .arg(ip)
+                .arg(&ip)
                 .output()
                 .expect("Problema al ejecutar el comando");
             let texto_salida = String::from_utf8_lossy(&comando.stdout);
             if let Some(metricas) = extraer_metricas(&texto_salida) {
-                println!("Exito, media {} ms", metricas.avg);
-                println!("Media: {}ms", metricas.mdev);
-                println!("Paquetes perdidos: {}%", metricas.packet_loss);
+                if metricas.avg > 50.00 {
+                    println!("!!! Conexión lenta con IP {} ({}), tiempo {} ms", ip, objetivo.nombre, metricas.avg);
+                }
+
+                if metricas.mdev > 10.00 {
+                    println!("!!! Conexion variable con IP {} ({}), variación en ping {} ms", ip, objetivo.nombre, metricas.mdev);
+                }
+
+                if metricas.packet_loss > 25 {
+                    println!("!!! Conexion inestable con IP {} ({}), variación en ping {} ms", ip, objetivo.nombre, metricas.packet_loss);
+                }
             } else {
                 println!("PROBLEMA extrayendo datos");
             }
@@ -79,19 +85,26 @@ fn main(){
                 .arg("-c")
                 .arg("4")
                 .arg("-6") //Forzar IPv6
-                .arg(ip)
+                .arg(&ip)
                 .output()
                 .expect("Problema al ejecutar el comando");
             let texto_salida = String::from_utf8_lossy(&comando.stdout);
             if let Some(metricas) = extraer_metricas(&texto_salida) {
-                println!("Exito, media {} ms", metricas.avg);
-                println!("Media: {}ms", metricas.mdev);
-                println!("Paquetes perdidos: {}%", metricas.packet_loss);
+                if metricas.avg > 50.00 {
+                    println!("!!! Conexión lenta con IP {} ({}), tiempo {} ms", ip, objetivo.nombre, metricas.avg);
+                }
+
+                if metricas.mdev > 10.00 {
+                    println!("!!! Conexion variable con IP {} ({}), variación en ping {} ms", ip, objetivo.nombre, metricas.mdev);
+                }
+
+                if metricas.packet_loss > 25 {
+                    println!("!!! Conexion inestable con IP {} ({}), variación en ping {} ms", ip, objetivo.nombre, metricas.packet_loss);
+                }
             } else {
                 println!("PROBLEMA extrayendo datos");
             }
         }
-        println!("==================================================")
 
     }
 }
