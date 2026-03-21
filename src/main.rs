@@ -52,7 +52,7 @@ fn main(){
 
     for objetivo in objetivos{
         for ip in objetivo.ip4{
-            println!("Ping a {}", ip);
+            //println!("Ping a {}", ip);
 
             let comando = Command::new("ping")
                 .arg("-c")
