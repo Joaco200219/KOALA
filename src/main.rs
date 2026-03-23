@@ -80,7 +80,7 @@ fn main(){
         }
 
         for ip in objetivo.ip6{
-            println!("Ping a {}", ip);
+            //println!("Ping a {}", ip);
             let comando = Command::new("ping")
                 .arg("-c")
                 .arg("4")
